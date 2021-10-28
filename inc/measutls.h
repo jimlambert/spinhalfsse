@@ -24,6 +24,7 @@ typedef std::vector<phasearr_t> phasearrs_t;
 typedef std::vector<int> posarr_t;
 typedef std::vector<posarr_t> posarrs_t;
 
+
 /*
  *  Accepts an initial site, start, and a final site, end.
  *
@@ -145,6 +146,19 @@ meassets_t measutls_realdzmagconf
   const posarrs_t&,
   const phasearrs_t&  
 );
+
+
+/*
+ *  Measures the different between the operators,
+ *  N+ = S+S- and N-= S-S+ divided by the system size
+ *  L on bonds of type <bondType>
+ */
+int currDiff
+(
+  Configuration&,
+  const int&
+);
+
 
 }
 

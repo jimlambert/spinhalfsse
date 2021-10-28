@@ -53,7 +53,7 @@ void diagupdt
       int spin1 = config.getspin(enumbond.bond[0]);
       int spin2 = config.getspin(enumbond.bond[1]);
       int vrtid = findvrt(spin1, spin2, spin1, spin2);
-
+      
       if(r*(xo - no) < nb*params.bt*fabs(wgts[type][vrtid]))
       {
         config.setvt(p,vrtid);
@@ -66,7 +66,7 @@ void diagupdt
     {
       int vrtid = config.getvt(p);   
       int type = config.getbdtype(p);
-    
+      
       if((r*nb*params.bt*fabs(wgts[type][vrtid])<(xo-no+1)))
       {
         config.setvt(p,-1);
@@ -228,7 +228,7 @@ void oneloopupdt
       {
         vt = config.getvt((int)vc/4);
         int tp = config.getbdtype((int)vc/4); // get bond type
-
+        
         double r = randhelp.random();
         int x=e;
 

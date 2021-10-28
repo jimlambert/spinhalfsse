@@ -343,4 +343,29 @@ meassets_t measutls_realdzmagconf
 }
 
 
+int currDiff
+(
+  Configuration& config,
+  const int& bondtp
+)
+{
+
+  double total = 0.0;
+
+  for(int p=0; p<config.xorder(); p++)
+  {
+    auto bond = config.getbd(p);
+    if(bond.type==bondtp) // check if this vertex is along a relevant bond
+    {
+      int vt = config.getvt(p);
+      if(vt < DIAGVERT_SUP) continue; // if vertex is diagonal it doesn't matter
+      else if(vt == 4) total += 1; 
+      else total -= 1;
+    }
+  } 
+
+  return total;
+}
+
+
 }

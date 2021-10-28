@@ -36,7 +36,7 @@ void write(const trnlst_t& trnlst)
     for(int e=0; e<4; e++)
     {
       for(int x=0; x<5; x++)
-        cout << setw(COLW) << left << trnlst[v][e][x];     
+        cout << setfill(' ') << setw(COLW) << left << trnlst[v][e][x];     
       cout << endl;
     }
   }
@@ -74,7 +74,8 @@ void write(const wgtlst_t& wgtlst)
   for(int v=0; v<NVERTS; v++)
   {
     string index = "[" + to_string(v) + "]";
-    cout << setw(COLW) 
+    cout << setfill(' ')
+         << setw(COLW) 
          << left << index 
          << setw(COLW) << left << wgtlst[v]
          << endl; 
@@ -88,7 +89,8 @@ void write(const sgnlst_t& sgnlst)
   for(int v=0; v<NVERTS; v++)
   {
     string index = "[" + to_string(v) + "]";
-    cout << setw(COLW) 
+    cout << setfill(' ')
+         << setw(COLW) 
          << left << index 
          << setw(COLW) << left << sgnlst[v]
          << endl; 
@@ -99,7 +101,8 @@ void write(const sgnlst_t& sgnlst)
 // BOND
 void write(const LatticeUtls::bond_t& bond)
 {
-  cout << setw(5) << left << bond[0]
+  cout << setfill(' ')
+       << setw(5) << left << bond[0]
        << setw(5) << left << bond[1] 
        << endl;
 }
@@ -111,7 +114,7 @@ void write(const LatticeUtls::bondlst_t& bondlst)
   for(size_t i=0; i<bondlst.size(); i++)
   {
     string index = "[" + to_string(i) + "]";
-    cout << setw(8) << left << index; 
+    cout << setfill(' ') << setw(8) << left << index; 
     write(bondlst[i]);
   }
   cout << "---" << endl;
@@ -132,7 +135,8 @@ void write(const linklst_t& linklst)
   for(size_t i=0; i<linklst.size(); i++)
   {
     string index = "[" + to_string(i) + "]";
-    cout << setw(LLW) << left << index << setw(LLW) << left << linklst[i];
+    cout << setfill(' ') << setw(LLW) << left 
+         << index << setw(LLW) << left << linklst[i];
     if(i%4 == 3) cout << endl;
   }
 }

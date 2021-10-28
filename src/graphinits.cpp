@@ -100,15 +100,15 @@ graph_t initsqlatt
 
 graph_t inithoneycomb
 (
-  const int& nx, 
-  const int& ny, 
+  const int& lx, 
+  const int& ly, 
   const bool bcx,
   const bool bcy
 )
 {
-  int chlen = 2*nx; // chain length
-  int nch = ny;     // number of chains
-  int nsites = 2*nx*ny;
+  int chlen = 2*lx; // chain length
+  int nch = ly;     // number of chains
+  int nsites = 2*lx*ly;
 
   graph_t graph;
   bondlst_t bondlst;
@@ -153,10 +153,10 @@ graph_t inithoneycomb
 }
 
 
-graph_t initSqKondoNecklace
+graph_t initIsoSqKondoNecklace
 (
-  const int& nx,
-  const int& ny,
+  const int& lx,
+  const int& ly,
   const bool bcx,
   const bool bcy 
 )
@@ -165,27 +165,27 @@ graph_t initSqKondoNecklace
   bondlst_t inPlaneBondLst;
   bondlst_t danglingBondLst;
 
-  int N = nx*ny;
+  int N = lx*ly;
 
-  for(int y=0; y<ny; y++)
-  for(int x=0; x<nx-(bcx^1); x++)
+  for(int y=0; y<ly; y++)
+  for(int x=0; x<lx-(bcx^1); x++)
   {
-    int xmin = y*nx;
-    int xmax = (y+1)*nx;  
-    inPlaneBondLst.push_back(bond_t{x+xmin, (x+xmin+1)%xmax + (xmin*(int)((x+1)/nx))});
+    int xmin = y*lx;
+    int xmax = (y+1)*lx;  
+    inPlaneBondLst.push_back(bond_t{x+xmin, (x+xmin+1)%xmax + (xmin*(int)((x+1)/lx))});
   }
  
-  for(int y=0; y<ny-(bcy^1); y++)
-  for(int x=0; x<nx; x++)
+  for(int y=0; y<ly-(bcy^1); y++)
+  for(int x=0; x<lx; x++)
   {
-    int xmin = y*nx;
-    inPlaneBondLst.push_back(bond_t{x+xmin, (x+xmin+nx)%(nx*ny)}); 
+    int xmin = y*lx;
+    inPlaneBondLst.push_back(bond_t{x+xmin, (x+xmin+lx)%(lx*ly)}); 
   }
 
-  for(int y=0; y<ny; y++)
-  for(int x=0; x<nx; x++)
+  for(int y=0; y<ly; y++)
+  for(int x=0; x<lx; x++)
   {
-    int xmin = y*nx;
+    int xmin = y*lx;
     danglingBondLst.push_back(bond_t{x+xmin, x+xmin+N});
   }
 
@@ -195,5 +195,51 @@ graph_t initSqKondoNecklace
 
   return graph;
 }
+
+
+graph_t initSqKondoNecklace
+(
+  const int& lx, 
+  const int& ly, 
+  const bool bcx, 
+  const bool bcy
+)
+{
+  int N = lx*ly;
+  graph_t graph;
+  bondlst_t xbondlst;
+  bondlst_t ybondlst;
+  bondlst_t danglingBondLst;
+  
+  for(int y=0; y<ly; y++)
+  for(int x=0; x<lx-(bcx^1); x++)
+  {
+    int xmin = y*lx;
+    int xmax = (y+1)*lx;  
+    xbondlst.push_back(bond_t{x+xmin, (x+xmin+1)%xmax + (xmin*(int)((x+1)/lx))});
+  }
+ 
+  for(int y=0; y<ly-(bcy^1); y++)
+  for(int x=0; x<lx; x++)
+  {
+    int xmin = y*lx;
+    ybondlst.push_back(bond_t{x+xmin, (x+xmin+lx)%(lx*ly)}); 
+  }
+
+  for(int y=0; y<ly; y++)
+  for(int x=0; x<lx; x++)
+  {
+    int xmin = y*lx;
+    danglingBondLst.push_back(bond_t{x+xmin, x+xmin+N});
+  }
+
+  graph.push_back(xbondlst);
+  graph.push_back(ybondlst);
+  graph.push_back(danglingBondLst); 
+
+  return graph;
+}
+
+
 
 }

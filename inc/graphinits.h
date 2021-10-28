@@ -59,6 +59,7 @@ graph_t inithoneycomb
   const bool bcy
 );
 
+
 /*
  *  Accepts x and y dimensions of square lattice and boundary conditions in x
  *  and y.
@@ -66,6 +67,30 @@ graph_t inithoneycomb
  *  Returns graph with single edge list (all edges treated equally), and the
  *  dangling z-spins for the Kondo necklace model.
  */
+graph_t initIsoSqKondoNecklace
+(
+  const int& nx,
+  const int& ny,
+  const bool bcx,
+  const bool bcy 
+);
+
+
+/*
+ *  Accepts x and y dimensions of square lattice and boundary conditions in x
+ *  and y.
+ *
+ *  Graph has three edge lists for x bonds, y bonds, and dangling bonds
+ */
+graph_t initIsoSqKondoNecklace
+(
+  const int& nx,
+  const int& ny,
+  const bool bcx,
+  const bool bcy 
+);
+
+
 graph_t initSqKondoNecklace
 (
   const int& nx,

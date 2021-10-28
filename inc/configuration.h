@@ -5,6 +5,7 @@
 
 #include <vector>
 #include <array>
+#include <string>
 
 #include "lattice.h"
 #include "randomhelpers.h"
@@ -46,7 +47,7 @@ class Configuration
       
     std::random_device _rd;
     std::mt19937 _mteng{_rd()};
-    std::uniform_int_distribution<> _rspin{-1, 1};
+    std::uniform_int_distribution<> _rspin{0, 1};
     
     // Random site
     std::uniform_int_distribution<>* _rsite;
@@ -58,7 +59,7 @@ class Configuration
 
   public:
 
-    Configuration(const int&);
+    Configuration(const int&, const std::string);
     
     ~Configuration() { delete _rsite; }
 
@@ -87,7 +88,11 @@ class Configuration
     
     void setbd(const int& p, const LatticeUtls::enumbond_t& enmbd) { _bdlst[p] = enmbd; }   
    
-    void randspin(const int& n) { _state[n] = _rspin(_mteng); }
+    void randspin(const int& n) 
+    { 
+      if(_rspin(_mteng)==1) _state[n] = 1;
+      else _state[n] = -1;
+    }
 
     void setsgn(const int& f) { _sgn = f * _sgn; }
 

@@ -24,24 +24,24 @@ int main(int argc, char *argv[])
 
   if(argc==1) // initializeparameters explicitly
   {
-    double bt = 5;  // inverse temperature
-    double ds = 1;   // easy axis anisotropy
-    double Js = 1;   // in plane heisenberg exchange
-    double Jp = 1;   // on site heisenberg exchange
+    double bt = 30;  // inverse temperature
+    double ds = 1.0;   // easy axis anisotropy
+    double Js = 1.0;   // in plane heisenberg exchange
+    double Jp = 0.0;   // on site heisenberg exchange
     double H  = 0.0; // applied magnetic field along z
 
-    double C  = 1.0; // offset term
+    double C  =  0.25; // offset term
     double R  = -1;  // sublattice rotation
     double G  = -1;  // add or subtract Hamiltonian
    
     size_t nequil = 10000;
-    size_t nsimul = 20000;
+    size_t nsimul = 100000;
     size_t mspace = 1;
    
     size_t nx = 1;
-    size_t ny = 1;
+    size_t ny = 10;
     bool bcx = false;
-    bool bcy = false;
+    bool bcy = true;
 
     string outname = "test.out";
 
@@ -97,7 +97,8 @@ int main(int argc, char *argv[])
    params.outfile
   };
 
-  paramlst.push_back(inPlaneParams);
+  paramlst.push_back(inPlaneParams); // x bond parameters
+  paramlst.push_back(inPlaneParams); // y bond parameters
   paramlst.push_back(onSiteParams);
 
 
@@ -110,10 +111,10 @@ int main(int argc, char *argv[])
   bool bcx = params.bcx;
   bool bcy = params.bcy;
 
-  graph_t sqKondoNecklaceGraph = LatticeUtls::initSqKondoNecklace(nx,ny,bcx,bcy);
-  Lattice sqKondoNecklace(sqKondoNecklaceGraph);
+  graph_t sqKondoNecklace = LatticeUtls::initSqKondoNecklace(nx,ny,bcx,bcy);
+  Lattice sqKondoLattice(sqKondoNecklace);
 
-  Configuration config(nsites);
+  Configuration config(nsites, "RD");
 
   RandomHelpers randhelp;
 
@@ -122,32 +123,42 @@ int main(int argc, char *argv[])
 
   // weights
   wgtlsts_t wgtlsts;
+  
   wgtlsts.push_back(initwgts(paramlst[0]));
   wgtlsts.push_back(initwgts(paramlst[1]));
+  wgtlsts.push_back(initwgts(paramlst[2]));
 
   // Transfer lists
   trnlst_t trnlstup = inittrnlst(2);
   trnlst_t trnlstdn = inittrnlst(-2);
   trnlstset_t trnLstSet{trnlstup,trnlstdn};
 
-  // Probability distributions for in plane and on site bonds
-  prblst_t prbLstUpInPlane = initprblst(trnlstup,wgtlsts[0]);
-  prblst_t prbLstDnInPlane = initprblst(trnlstdn,wgtlsts[0]);
-  prblst_t cpdLstUpInPlane = initcpdlst(prbLstUpInPlane);
-  prblst_t cpdLstDnInPlane = initcpdlst(prbLstDnInPlane); 
-  prblstset_t cpdLstSetInPlane{cpdLstUpInPlane,cpdLstDnInPlane};
- 
-  prblst_t prbLstUpOnSite = initprblst(trnlstup,wgtlsts[1]);
-  prblst_t prbLstDnOnSite = initprblst(trnlstdn,wgtlsts[1]);
+  // Probability distributions for in plane x bonds
+  prblst_t prbLstUpInPlaneX = initprblst(trnlstup,wgtlsts[0]);
+  prblst_t prbLstDnInPlaneX = initprblst(trnlstdn,wgtlsts[0]);
+  prblst_t cpdLstUpInPlaneX = initcpdlst(prbLstUpInPlaneX);
+  prblst_t cpdLstDnInPlaneX = initcpdlst(prbLstDnInPlaneX); 
+  prblstset_t cpdLstSetInPlaneX{cpdLstUpInPlaneX,cpdLstDnInPlaneX};
+  
+  // Probability distributions for in plane y bonds
+  prblst_t prbLstUpInPlaneY = initprblst(trnlstup,wgtlsts[1]);
+  prblst_t prbLstDnInPlaneY = initprblst(trnlstdn,wgtlsts[1]);
+  prblst_t cpdLstUpInPlaneY = initcpdlst(prbLstUpInPlaneY);
+  prblst_t cpdLstDnInPlaneY = initcpdlst(prbLstDnInPlaneY); 
+  prblstset_t cpdLstSetInPlaneY{cpdLstUpInPlaneY,cpdLstDnInPlaneY};
+  
+  // Probability distributions for on site bonds 
+  prblst_t prbLstUpOnSite = initprblst(trnlstup,wgtlsts[2]);
+  prblst_t prbLstDnOnSite = initprblst(trnlstdn,wgtlsts[2]);
   prblst_t cpdLstUpOnSite = initcpdlst(prbLstUpOnSite);
   prblst_t cpdLstDnOnSite = initcpdlst(prbLstDnOnSite); 
   prblstset_t cpdLstSetOnSite{cpdLstUpOnSite,cpdLstDnOnSite};
 
   prblstsets_t cpdLstSets;
 
-  cpdLstSets.push_back(cpdLstSetInPlane);
+  cpdLstSets.push_back(cpdLstSetInPlaneX);
+  cpdLstSets.push_back(cpdLstSetInPlaneY);
   cpdLstSets.push_back(cpdLstSetOnSite);
-
 
 // SIMULATION
 // ==========
@@ -159,7 +170,7 @@ int main(int argc, char *argv[])
     diagupdt
     (
       config,
-      sqKondoNecklace,
+      sqKondoLattice,
       params,
       wgtlsts,
       randhelp 
@@ -188,7 +199,7 @@ int main(int argc, char *argv[])
     diagupdt
     (
       config, 
-      sqKondoNecklace, 
+      sqKondoLattice, 
       params, 
       wgtlsts, 
       randhelp
@@ -208,9 +219,13 @@ int main(int argc, char *argv[])
   }
 
   Measurement opnum = OpNumAccumulator.getMeasurement();
+  double opnumerr = opnum.err / opnum.ave;
   double energy = params.G*((1.0/params.bt)*(opnum.ave) 
-                       -sqKondoNecklace.nbonds()*params.C) / (double)nsites;
+                       -sqKondoLattice.nbonds()*params.C);
+  
+  double energyerr = abs(energy)*opnumerr;
   cout << "Energy: " << '\t' << setprecision(10)
        << energy << '\t' << "+/-" << energyerr << endl;
+  
   return 0;
 }

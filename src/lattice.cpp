@@ -32,6 +32,8 @@ enumbond_t Lattice::getrandombond()
   {
     int bdlstsize = _graph[bdlst].size();
     
+    if(bdlstsize == 0) continue; // skip this bond list if it's empty
+
     if(randbond < (total+bdlstsize))
       return enumbond_t{randbond-total, bdlst, _graph[bdlst][randbond-total]};
     

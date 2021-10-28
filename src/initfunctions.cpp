@@ -43,15 +43,14 @@ wgtlst_t initwgts(const Parameters& params)
       wgtlst[i]=params.C
                +params.G*(params.ds*params.Js*0.25*s1*s2
                          +params.Jp*0.25*s1*s2
-                         +params.H*(s1+s2)
+                         +0.5*params.H*(s1+s2)
                          );
     }
     else if(TYPETBL[i]==1)
     {
-      wgtlst[i]=params.C
-               +params.G*(0.5*params.Js
-                         +0.5*params.Jp   
-                         );
+      wgtlst[i]=params.G*params.R*(0.5*params.Js
+                                  +0.5*params.Jp   
+                                  );
     }
     else cout << "UNKNOWN TYPE IN INIT FUNCTION" << endl;
   }

@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include <iomanip>
+#include <cmath>
 
 #include "iofunctions.h"
 #include "spinHalfVertices.h"
@@ -13,11 +14,22 @@ namespace spinhalfsse
 {
 
 
-Configuration::Configuration(const int& nsites) : _nsites(nsites)
+Configuration::Configuration(const int& nsites, const string initType) : _nsites(nsites)
 {
   // start at a random site
   _rsite = new std::uniform_int_distribution<>{0, _nsites-1}; 
-  for(int i=0; i<nsites; i++) _state.push_back(_rspin(_mteng));   
+  if(initType=="RD")
+    for(int i=0; i<nsites; i++)
+    {
+      if(_rspin(_mteng)==1) _state.push_back(1);
+      else _state.push_back(-1);
+    } 
+  else if(initType=="UP")
+    for(int i=0; i<nsites; i++) _state.push_back(1);
+  else if(initType=="DN")
+    for(int i=0; i<nsites; i++) _state.push_back(-1);
+  else if(initType=="NL")
+    for(int i=0; i<nsites; i++) _state.push_back(1*pow(-1,i));
   
   // Initialize vertex and bond lists
   _vtlst.resize(_xorder, -1);
@@ -62,7 +74,7 @@ void Configuration::printstate()
   cout << "---" << endl;
   
   for(int i=0; i<_nsites; i++) 
-    cout << setw(5) << left << _state[i];
+    cout << setfill(' ') << setw(5) << left << _state[i];
   cout << endl;
   
   cout << "---" << endl;
@@ -74,7 +86,8 @@ void Configuration::printverts()
   for(int p=0; p<_xorder; p++)
   {
     string index = "[" + to_string(p) +  "]";
-    cout << setw(8) << left << index 
+    cout << setfill(' ') 
+         << setw(8) << left << index 
          << setw(8) << left << _vtlst[p] 
          << endl;
   }
